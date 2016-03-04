@@ -461,15 +461,19 @@ unsafe fn choose_fbconfig(egl: &ffi::egl::Egl, display: ffi::egl::types::EGLDisp
     let descriptor = {
         let mut out: Vec<c_int> = Vec::with_capacity(37);
 
+        /*
         if egl_version >= &(1, 2) {
             out.push(ffi::egl::COLOR_BUFFER_TYPE as c_int);
             out.push(ffi::egl::RGB_BUFFER as c_int);
         }
+        */
 
+        /*
         out.push(ffi::egl::SURFACE_TYPE as c_int);
         // TODO: Some versions of Mesa report a BAD_ATTRIBUTE error
         // if we ask for PBUFFER_BIT as well as WINDOW_BIT
         out.push((ffi::egl::WINDOW_BIT) as c_int);
+        */
 
         match (api, version) {
             (Api::OpenGlEs, Some((3, _))) => {
@@ -483,8 +487,8 @@ unsafe fn choose_fbconfig(egl: &ffi::egl::Egl, display: ffi::egl::types::EGLDisp
                 if egl_version < &(1, 3) { return Err(CreationError::NoAvailablePixelFormat); }
                 out.push(ffi::egl::RENDERABLE_TYPE as c_int);
                 out.push(ffi::egl::OPENGL_ES2_BIT as c_int);
-                out.push(ffi::egl::CONFORMANT as c_int);
-                out.push(ffi::egl::OPENGL_ES2_BIT as c_int);
+                //out.push(ffi::egl::CONFORMANT as c_int);
+                //out.push(ffi::egl::OPENGL_ES2_BIT as c_int);
             },
             (Api::OpenGlEs, Some((1, _))) => {
                 if egl_version >= &(1, 3) {
@@ -505,6 +509,7 @@ unsafe fn choose_fbconfig(egl: &ffi::egl::Egl, display: ffi::egl::types::EGLDisp
             (_, _) => unimplemented!(),
         };
 
+        /*
         if let Some(hardware_accelerated) = reqs.hardware_accelerated {
             out.push(ffi::egl::CONFIG_CAVEAT as c_int);
             out.push(if hardware_accelerated {
@@ -513,6 +518,7 @@ unsafe fn choose_fbconfig(egl: &ffi::egl::Egl, display: ffi::egl::types::EGLDisp
                 ffi::egl::SLOW_CONFIG as c_int
             });
         }
+        */
 
         if let Some(color) = reqs.color_bits {
             out.push(ffi::egl::RED_SIZE as c_int);
@@ -538,6 +544,7 @@ unsafe fn choose_fbconfig(egl: &ffi::egl::Egl, display: ffi::egl::types::EGLDisp
             out.push(stencil as c_int);
         }
 
+        /*
         if let Some(true) = reqs.double_buffer {
             return Err(CreationError::NoAvailablePixelFormat);
         }
@@ -550,6 +557,7 @@ unsafe fn choose_fbconfig(egl: &ffi::egl::Egl, display: ffi::egl::types::EGLDisp
         if reqs.stereoscopy {
             return Err(CreationError::NoAvailablePixelFormat);
         }
+        */
 
         // FIXME: srgb is not taken into account
 
